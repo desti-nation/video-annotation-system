@@ -1,0 +1,390 @@
+/* 主样式文件 */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* 确保主内容区占满剩余空间 */
+
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+
+/* 视频播放器样式 */
+
+.video-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+/* 标注列表项样式 */
+
+.annotation-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #6c757d;
+    transition: all 0.2s;
+}
+
+.annotation-item:hover {
+    background-color: #e9ecef;
+}
+
+
+/* 当前用户标注样式 */
+
+.annotation-item.interval {
+    border-left-color: #0d6efd;
+}
+
+.annotation-item.frame {
+    border-left-color: #198754;
+}
+
+
+/* 其他用户标注样式 */
+
+.annotation-item.others-annotation {
+    background-color: #f0f7ff;
+    border-left-color: #6f42c1;
+}
+
+.annotation-item.others-annotation:hover {
+    background-color: #e1edff;
+}
+
+.annotation-item.others-annotation.interval {
+    border-left-color: #9c6efa;
+}
+
+.annotation-item.others-annotation.frame {
+    border-left-color: #2ba3ff;
+}
+
+
+/* 标注视图切换按钮 */
+
+.annotation-view-toggle {
+    margin-bottom: 1rem;
+}
+
+
+/* 文件名容器样式 */
+
+.file-name-container {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95rem;
+}
+
+
+/* 标注信息紧凑布局 */
+
+.annotation-info {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+}
+
+
+/* 紧凑型徽章样式 */
+
+.compact-badges {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+}
+
+.badge-mini {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.15em 0.4em !important;
+    margin-left: 2px;
+    border-radius: 0.375rem;
+    color: white;
+    font-weight: normal;
+}
+
+.compact-annotators {
+    display: inline-flex;
+    align-items: center;
+}
+
+.compact-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.15em 0.4em;
+    margin-right: 2px;
+    border-radius: 0.375rem;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.compact-badge.current-user {
+    background-color: #198754;
+    color: white;
+}
+
+.compact-badge.other-user {
+    background-color: #0d6efd;
+    color: white;
+}
+
+
+/* 标注摘要样式 */
+
+.annotation-summary {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    margin-top: 4px;
+    padding-left: 2px;
+    font-weight: 500;
+}
+
+.video-item.user-annotated .annotation-summary {
+    color: #198754;
+}
+
+.video-item.others-annotated .annotation-summary {
+    color: #0d6efd;
+}
+
+.video-item.mixed-annotated .annotation-summary {
+    color: #6f42c1;
+}
+
+
+/* 视频列表项样式 */
+
+.video-item {
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+    transition: all 0.25s ease;
+    border-left: 4px solid #6c757d;
+    /* 默认边框颜色(灰色) */
+    color: #212529;
+    /* 默认文字颜色(黑色) */
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.video-item:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.video-item.active {
+    background-color: #cfe2ff;
+    border-left: 4px solid #0d6efd;
+    box-shadow: 0 3px 5px rgba(13, 110, 253, 0.2);
+}
+
+
+/* 自己标注的视频项样式 */
+
+.video-item.user-annotated {
+    border-left: 6px solid #198754;
+    /* 更粗的绿色边框 */
+    background-color: rgba(25, 135, 84, 0.05);
+    /* 淡绿色背景 */
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.15);
+    animation: pulse-green 2s ease-in-out 1;
+}
+
+.video-item.user-annotated:hover {
+    background-color: rgba(25, 135, 84, 0.1);
+    box-shadow: 0 3px 6px rgba(25, 135, 84, 0.2);
+}
+
+.video-item.user-annotated::before {
+    content: "";
+}
+
+
+/* 其他人标注的视频项样式 */
+
+.video-item.others-annotated {
+    border-left: 6px solid #0d6efd;
+    /* 更粗的蓝色边框 */
+    background-color: rgba(13, 110, 253, 0.05);
+    /* 淡蓝色背景 */
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.15);
+    animation: pulse-blue 2s ease-in-out 1;
+}
+
+.video-item.others-annotated:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    box-shadow: 0 3px 6px rgba(13, 110, 253, 0.2);
+}
+
+.video-item.others-annotated::before {
+    content: "";
+}
+
+
+/* 既有自己又有他人标注的视频项样式 */
+
+.video-item.mixed-annotated {
+    border-left: 6px solid #6f42c1;
+    /* 更粗的紫色边框 */
+    background-color: rgba(111, 66, 193, 0.05);
+    /* 淡紫色背景 */
+    box-shadow: 0 2px 4px rgba(111, 66, 193, 0.15);
+    animation: pulse-purple 2s ease-in-out 1;
+}
+
+.video-item.mixed-annotated:hover {
+    background-color: rgba(111, 66, 193, 0.1);
+    box-shadow: 0 3px 6px rgba(111, 66, 193, 0.2);
+}
+
+
+/* 标注用户徽章 */
+
+.user-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-radius: 1rem;
+    background-color: #e9ecef;
+    color: #495057;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.user-badge.current-user {
+    background-color: #198754;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(25, 135, 84, 0.3);
+}
+
+.user-badge.other-user {
+    background-color: #0d6efd;
+    color: white;
+    box-shadow: 0 1px 3px rgba(13, 110, 253, 0.3);
+}
+
+
+/* 时间显示样式 */
+
+#currentTimeDisplay,
+#durationDisplay {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+
+/* 确保滚动条适当显示 */
+
+.overflow-auto {
+    overflow-y: auto;
+    max-height: calc(100vh - 400px);
+}
+
+
+/* 徽章增强样式 */
+
+.badge,
+.badge-mini {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.badge.bg-success,
+.badge-mini.bg-success {
+    animation: pulse-green 2s infinite;
+}
+
+.badge.bg-primary,
+.badge-mini.bg-primary {
+    animation: pulse-blue 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(25, 135, 84, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+    }
+}
+
+@keyframes pulse-blue {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(13, 110, 253, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}
+
+@keyframes pulse-purple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(111, 66, 193, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(111, 66, 193, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(111, 66, 193, 0);
+    }
+}
+
+
+/* 历史记录下拉菜单样式 */
+
+.dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.dropdown-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f7ff;
+}
+
+
+/* 解决datalist在某些浏览器兼容性问题 */
+
+datalist {
+    display: none;
+    /* 确保不直接显示 */
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none !important;
+    /* 移除Chrome中的下拉箭头 */
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作状态视频数据标注系统</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="container-fluid vh-100 d-flex flex-column">
+        <!-- 配置区域 - 初始显示 -->
+        <div id="configSection" class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">视频标注系统 - 初始配置</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="configForm">
+                                <div class="mb-3">
+                                    <label for="userName" class="form-label">用户姓名</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="userName" list="userNameList" autocomplete="off" required>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span>历史</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" id="userNameDropdown">
+                                            <!-- 历史用户名将通过JS动态填充 -->
+                                        </ul>
+                                    </div>
+                                    <datalist id="userNameList">
+                                        <!-- 历史用户名列表将通过JS动态填充 -->
+                                    </datalist>
+                                    <div class="form-text">请输入您的姓名，系统将自动生成拼音作为您的ID（数字和英文将被保留）</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="videoFolder" class="form-label">视频文件夹路径</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="videoFolder" list="videoFolderList" autocomplete="off" placeholder="例如: D:\Videos" required>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span>历史</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" id="videoFolderDropdown">
+                                            <!-- 历史路径将通过JS动态填充 -->
+                                        </ul>
+                                    </div>
+                                    <datalist id="videoFolderList">
+                                        <!-- 历史路径列表将通过JS动态填充 -->
+                                    </datalist>
+                                    <div class="form-text">请输入包含视频文件的文件夹的完整路径</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">加载/设置</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主应用区域 - 配置后显示 -->
+        <div id="mainAppSection" class="flex-grow-1 d-none">
+            <!-- 顶部导航栏 -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">工作状态视频标注系统</a>
+                    <div class="d-flex text-light align-items-center">
+                        <span id="userInfoDisplay" class="me-3">用户: </span>
+                        <span id="videoFolderDisplay" class="me-3">视频路径: </span>
+                        <button id="openFolderBtn" class="btn btn-sm btn-outline-light me-2">打开路径</button>
+                        <button id="changeConfigBtn" class="btn btn-sm btn-outline-light">更改设置</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- 主内容区 - 三栏式布局 -->
+            <div class="container-fluid flex-grow-1 d-flex">
+                <!-- 左侧面板 - 视频列表 -->
+                <div class="col-md-2 bg-light p-3 border-end">
+                    <h5 class="mb-3">视频列表</h5>
+                    <div id="videoListContainer" class="list-group">
+                        <!-- 视频列表将通过JS动态填充 -->
+                    </div>
+                </div>
+
+                <!-- 中间面板 - 视频播放器 -->
+                <div class="col-md-6 p-3">
+                    <div class="video-container d-flex flex-column h-100">
+                        <h5 id="currentVideoTitle" class="mb-3">请选择一个视频</h5>
+                        <div class="ratio ratio-16x9 mb-2">
+                            <video id="videoPlayer" controls>
+                                <source src="" type="video/mp4">
+                                您的浏览器不支持HTML5视频播放。
+                            </video>
+                        </div>
+                        <div class="video-controls mt-2">
+                            <div class="btn-group">
+                                <button id="prevFrameBtn" class="btn btn-sm btn-outline-secondary" disabled>
+                                    <i class="bi bi-skip-backward"></i> 上一帧
+                                </button>
+                                <button id="nextFrameBtn" class="btn btn-sm btn-outline-secondary" disabled>
+                                    下一帧 <i class="bi bi-skip-forward"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <label for="playbackRate" class="form-label">播放速度</label>
+                                <select id="playbackRate" class="form-select form-select-sm" disabled>
+                                    <option value="0.25">0.25x</option>
+                                    <option value="0.5">0.5x</option>
+                                    <option value="1" selected>1x (正常)</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="2">2x</option>
+                                </select>
+                            </div>
+                            <div class="mt-2">
+                                <span id="currentTimeDisplay">00:00:00.000</span> /
+                                <span id="durationDisplay">00:00:00.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧面板 - 标注区 -->
+                <div class="col-md-4 border-start p-3">
+                    <div class="annotation-container d-flex flex-column h-100">
+                        <h5 class="mb-3">标注操作</h5>
+
+                        <!-- 标注类型选择 -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">标注类型</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="annotationType" id="intervalType" value="interval" checked>
+                                <label class="btn btn-outline-primary" for="intervalType">区间标注</label>
+                                <input type="radio" class="btn-check" name="annotationType" id="frameType" value="frame">
+                                <label class="btn btn-outline-primary" for="frameType">帧标注</label>
+                            </div>
+                        </div>
+
+                        <!-- 区间标注操作 -->
+                        <div id="intervalAnnotationSection">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="startTime" class="form-label">开始时间</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="startTime" placeholder="HH:MM:SS.mmm">
+                                        <button class="btn btn-outline-secondary" id="setStartTimeBtn">设为当前</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="endTime" class="form-label">结束时间</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="endTime" placeholder="HH:MM:SS.mmm">
+                                        <button class="btn btn-outline-secondary" id="setEndTimeBtn">设为当前</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 帧标注操作 -->
+                        <div id="frameAnnotationSection" class="d-none">
+                            <div class="mb-3">
+                                <label for="frameTime" class="form-label">当前帧时间</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="frameTime" placeholder="HH:MM:SS.mmm" readonly>
+                                    <button class="btn btn-outline-secondary" id="setFrameTimeBtn">标记当前帧</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 标签输入 -->
+                        <div class="mb-3">
+                            <label for="annotationLabel" class="form-label">标注标签</label>
+                            <input type="text" class="form-control" id="annotationLabel" placeholder="输入动作或状态描述">
+                        </div>
+
+                        <!-- 标注操作按钮 -->
+                        <div class="mb-3">
+                            <button id="saveAnnotationBtn" class="btn btn-success w-100">保存标注</button>
+                        </div>
+
+                        <!-- 标注列表 -->
+                        <div class="flex-grow-1 overflow-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0">标注列表</h5>
+                                <div class="btn-group">
+                                    <button id="exportVisualsBtn" class="btn btn-sm btn-outline-primary">导出可视化</button>
+                                    <button id="openExportDirBtn" class="btn btn-sm btn-outline-secondary">打开导出目录</button>
+                                </div>
+                            </div>
+                            <div id="annotationListContainer" class="list-group">
+                                <!-- 标注列表将通过JS动态填充 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示信息模态框 -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalTitle">提示</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="messageModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & 依赖库 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 汉字转拼音库 -->
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-pro/dist/index.js"></script>
+    <!-- 自定义JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
